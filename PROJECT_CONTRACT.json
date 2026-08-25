@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "metrics": {
+    "production_loc": 2300,
+    "production_files": 36,
+    "production_packages": 8,
+    "test_files": 9,
+    "production_functions": 182,
+    "decision_points": 364
+  },
+  "persistence": {
+    "module": "go.etcd.io/bbolt",
+    "entities": ["Game", "Player", "Score", "ImportRecord"],
+    "reopen_test": "TestPersistenceSurvivesReopen"
+  },
+  "workflows": [
+    {"steps": ["submit category, age, device, and search filters", "query persisted games through the public facade", "match age and device eligibility", "return deterministic alphabetical results"], "test": "TestWorkflowOne"},
+    {"steps": ["receive deterministic fixture rows", "validate each game and persist accepted rows", "count rejected rows and cancellation state", "persist completed ImportRecord"], "test": "TestWorkflowThree"},
+    {"steps": ["validate score and referenced game/player", "persist score in embedded storage", "aggregate points and game counts", "sort and assign deterministic ranks"], "test": "TestWorkflowTwo"}
+  ]
+}
