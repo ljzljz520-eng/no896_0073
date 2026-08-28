@@ -49,6 +49,9 @@ func (s *Service) Archive(ctx context.Context, id string) error {
 	return s.db.SaveGame(g)
 }
 func (s *Service) ImportWithAudit(ctx context.Context, source string, rows []model.Game) (model.ImportRecord, error) {
-	// The request context is intentionally lost here; a cancelled import still mutates records.
-	return catalog.NewImporter(s.catalog).Simulate(context.Background(), source, rows)
+	// Propagate the request context so a cancelled import stops mutating records.
+	// Simulate checks ctx.Err() per row and inside each Create call, so subsequent
+	// record writes inherit the original request's cancellation state instead of
+	// outliving it and continuing to produce side effects.
+	return catalog.NewImporter(s.catalog).Simulate(ctx, source, rows)
 }
